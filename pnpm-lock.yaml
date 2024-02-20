@@ -11,6 +11,9 @@ dependencies:
   '@jest/globals':
     specifier: ^29.7.0
     version: 29.7.0
+  pnpm:
+    specifier: ^8.15.3
+    version: 8.15.3
 
 devDependencies:
   '@types/jest':
@@ -3524,6 +3527,12 @@ packages:
     dependencies:
       find-up: 4.1.0
     dev: true
+
+  /pnpm@8.15.3:
+    resolution: {integrity: sha512-3YXNbspkF8b3PbMroetHZ/+0y6T1vwcnhGciyStrnlaizCGLEThbvCsh8YoWpn2nes6um2Gg9WoWQ7JeH7amBQ==}
+    engines: {node: '>=16.14'}
+    hasBin: true
+    dev: false
 
   /possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
