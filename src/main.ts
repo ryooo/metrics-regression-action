@@ -10,13 +10,14 @@ import { run as serviceRun } from './service';
 export const run = async (): Promise<void> => {
   const config = getConfig();
 
-  const { repo, runId, sha } = context;
-  log.info(`runid = ${runId}, sha = ${sha}`);
+  const { repo, runId } = context;
+  log.info(`runid = ${runId}`);
 
   const date = new Date().toISOString().split('T')[0];
   const event = getEvent();
   log.info(`succeeded to get event, number = ${event.number}, before = ${event.before}, after = ${event.after}`);
   log.info(`pull_request.head.sha = ${event.pull_request?.head?.sha}`);
+  const sha = event.after || context.sha;
 
   const octokit = getOctokit(config.githubToken);
   const client = createClient(repo, octokit);
