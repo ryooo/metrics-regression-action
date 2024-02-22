@@ -42,7 +42,6 @@ import { log } from './logger';
 import { CompareOutput } from './compare';
 import { workspace } from './path';
 import { backOff } from 'exponential-backoff';
-import { globSync } from 'glob';
 import { ACTUAL_DIR_NAME, EXPECTED_DIR_NAME } from './constants';
 import { join } from 'path';
 import { copyFiles } from './helper';

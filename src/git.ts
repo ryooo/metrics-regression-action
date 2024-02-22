@@ -1,4 +1,4 @@
-import { ExecOptions, exec } from '@actions/exec';
+import { ExecOptions } from '@actions/exec';
 
 import { log } from './logger';
 import { capture, ExecResult } from './helper';

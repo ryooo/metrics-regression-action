@@ -16,7 +16,7 @@ const logger_1 = require("./logger");
 const path_2 = require("./path");
 const run_1 = require("./run");
 const push_1 = require("./push");
-const { cpy } = require('cpy');
+const helper_1 = require("./helper");
 /**
  * Compare and post report on comment.
  * 1. create workspace.
@@ -101,7 +101,7 @@ exports.run = run;
 const copyActualJsons = async (config) => {
     logger_1.log.info(`Start copy jsons from ${config.jsonDirectoryPath}`);
     try {
-        await cpy((0, path_1.join)(config.jsonDirectoryPath, `**/*.json`), (0, path_1.join)((0, path_2.workspace)(), constants_1.ACTUAL_DIR_NAME));
+        await (0, helper_1.copyFiles)((0, path_1.join)(config.jsonDirectoryPath, `**/*.json`), (0, path_1.join)((0, path_2.workspace)(), constants_1.ACTUAL_DIR_NAME));
     }
     catch (e) {
         logger_1.log.error(`Failed to copy jsons ${e}`);
@@ -118,8 +118,14 @@ const copyActualJsons = async (config) => {
 const compareAndUploadArtifact = async (client, config) => {
     const result = await (0, compare_1.compare)(config);
     logger_1.log.debug('compare result', result);
+    logger_1.log.info((0, path_2.workspace)());
+    logger_1.log.info((0, path_1.join)((0, path_2.workspace)(), '**/*'));
     const files = (0, glob_1.sync)((0, path_1.join)((0, path_2.workspace)(), '**/*'));
-    logger_1.log.info('Start upload artifact');
+    logger_1.log.info('Start upload artifact', files.join('\n'));
+    logger_1.log.info((await (0, helper_1.capture)('pwd', [])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls', ['-la', '/'])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls', ['-la'])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls ', ['-la', (0, path_2.workspace)()])).stdout);
     try {
         await client.uploadArtifact(files, config.artifactName);
     }

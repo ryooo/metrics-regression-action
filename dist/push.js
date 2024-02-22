@@ -55,10 +55,9 @@ const git_1 = require("./git");
 const logger_1 = require("./logger");
 const path_1 = require("./path");
 const exponential_backoff_1 = require("exponential-backoff");
-const glob_1 = require("glob");
 const constants_1 = require("./constants");
 const path_2 = require("path");
-const { cpy } = require('cpy');
+const helper_1 = require("./helper");
 const pushFilesToBranch = async (input) => {
     const { env } = input;
     const config = genConfig(input);
@@ -116,7 +115,7 @@ const pushFilesToBranch = async (input) => {
     const destDir = input.targetDir;
     // Make sure the destination sourceDir exists
     await (0, io_1.mkdirP)(path.resolve(REPO_TEMP, destDir));
-    await copyFiles(REPO_TEMP, destDir);
+    await copyFilesWorkspaceToRepository(REPO_TEMP, destDir);
     await (0, git_1.add)(execOptions);
     const message = `Update ${input.branch} to output generated at runId:${input.runId}`;
     await (0, git_1.commit)(message, execOptions);
@@ -147,18 +146,14 @@ const genConfig = (input) => {
     };
     return config;
 };
-const copyFiles = async (temp, dest) => {
+const copyFilesWorkspaceToRepository = async (temp, dest) => {
     logger_1.log.info(`Copying all files`);
-    const expectedFiles = (0, glob_1.globSync)((0, path_2.join)((0, path_1.workspace)(), constants_1.EXPECTED_DIR_NAME, '**/*.json'));
-    if (expectedFiles.length > 0) {
-        logger_1.log.info(`Copying expected files`);
-        await cpy(expectedFiles, `${temp}/${dest}/expected/`);
-    }
-    const actualFiles = (0, glob_1.globSync)((0, path_2.join)((0, path_1.workspace)(), constants_1.ACTUAL_DIR_NAME, '**/*.json'));
-    if (actualFiles.length > 0) {
-        logger_1.log.info(`Copying new files`);
-        await cpy(actualFiles, `${temp}/${dest}/actual/`);
-    }
+    logger_1.log.info(`Copying expected files`);
+    const expectedPattern = (0, path_2.join)((0, path_1.workspace)(), constants_1.EXPECTED_DIR_NAME, '**/*.json');
+    await (0, helper_1.copyFiles)(expectedPattern, `${temp}/${dest}/expected/`);
+    logger_1.log.info(`Copying new files`);
+    const actualPattern = (0, path_2.join)((0, path_1.workspace)(), constants_1.ACTUAL_DIR_NAME, '**/*.json');
+    await (0, helper_1.copyFiles)(actualPattern, `${temp}/${dest}/actual/`);
     return;
 };
 const createPushDirName = ({ runId, artifactName, date, }) => `${date}_${runId}_${artifactName}`;
