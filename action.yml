@@ -9,15 +9,26 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  github-token:
+    description: 'GitHub API access token.It is used to upload test report and add comment to pull request.'
     required: true
-    default: '1000'
+  json-directory-path:
+    description: "Path to json files directory.The images stored in this directory will be compared with the expected json files from the last upload."
+    required: true
+  target-hash:
+    description: "The commit hash to be compared."
+    required: false
+  artifact-name:
+    description: 'Workflow artifact name. `reg` by default.'
+    required: false
+  branch:
+    description: 'A branch name which manages images. `reg_actions` by default.'
+    required: false
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  result:
+    description: 'ok or failed'
 
 runs:
   using: node20
