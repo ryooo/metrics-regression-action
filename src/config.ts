@@ -88,16 +88,12 @@ export const getConfig = (): Config => {
   const artifactName = getInput('artifact-name') || ARTIFACT_NAME;
   const branch = getInput('branch') || 'metrics-regression-action';
 
-  log.info(
-    `config is ${{
-      githubToken,
-      actualDirectoryPath,
-      expectedDirectoryPath,
-      targetHash,
-      artifactName,
-      branch,
-    }}`,
-  );
+  log.info(`--------config--------`);
+  log.info(`actualDirectoryPath is `, actualDirectoryPath);
+  log.info(`expectedDirectoryPath is `, expectedDirectoryPath);
+  log.info(`targetHash is `, targetHash);
+  log.info(`artifactName is `, artifactName);
+  log.info(`branch is `, branch);
 
   return {
     githubToken,
