@@ -10,7 +10,7 @@ import * as core from '@actions/core';
 import * as main from '../src/main';
 
 // Mock the action's main function
-const runMock = jest.spyOn(main, 'run');
+const mainMock = jest.spyOn(main, 'run');
 
 // Other utilities
 const timeRegex = /^\d{2}:\d{2}:\d{2}/;
@@ -45,7 +45,7 @@ describe('action', () => {
     });
 
     await main.run();
-    expect(runMock).toHaveReturned();
+    expect(mainMock).toHaveReturned();
 
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...');
@@ -67,7 +67,7 @@ describe('action', () => {
     });
 
     await main.run();
-    expect(runMock).toHaveReturned();
+    expect(mainMock).toHaveReturned();
 
     // Verify that all of the core library functions were called correctly
     expect(setFailedMock).toHaveBeenNthCalledWith(1, 'milliseconds not a number');

@@ -15,7 +15,7 @@ import { DownloadClient, UploadClient, Client } from './client';
 
 const { cpy } = require('cpy');
 
-// Download expected jsons from target artifact.
+// Download expected jsons from target artifact, and save on expected directory.
 const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: number) => {
   log.info(`Start to download expected jsons, artifact id = ${latestArtifactId}`);
   try {

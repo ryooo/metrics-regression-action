@@ -3,11 +3,11 @@ import * as github from '@actions/github';
 
 import { getConfig } from './config';
 import { getEvent } from './event';
-import { run } from './service';
+import { run as serviceRun } from './service';
 import { createClient } from './client';
 import { log } from './logger';
 
-export const main = async () => {
+export const run = async () => {
   const config = getConfig();
 
   const { repo, runId, sha } = github.context;
@@ -21,7 +21,7 @@ export const main = async () => {
   const client = createClient(repo, octokit);
 
   log.info(`start`);
-  await run({ event, runId, sha, client, date, config });
+  await serviceRun({ event, runId, sha, client, date, config });
 };
 
-main().catch(e => core.setFailed(e.message));
+run().catch(e => core.setFailed(e.message));

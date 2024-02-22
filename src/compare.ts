@@ -14,6 +14,7 @@ export type CompareOutput = {
 };
 
 export const compare = async (config: Config): Promise<CompareOutput> => {
+  config.jsonDirectoryPath;
   const result = {
     passedItems: [],
     failedItems: [],
