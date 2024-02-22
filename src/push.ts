@@ -83,7 +83,7 @@ export const pushFilesToBranch = async (input: PushImagesInput): Promise<void> =
   const { env } = input;
   const config = genConfig(input);
 
-  const TMP_PATH = await fs.mkdtemp(path.join(tmpdir(), 'reg-actions-'));
+  const TMP_PATH = await fs.mkdtemp(path.join(tmpdir(), 'metrics-regression-action-'));
   const REPO_TEMP = path.join(TMP_PATH, 'repo');
 
   if (!env.GITHUB_EVENT_PATH) throw new Error('Expected GITHUB_EVENT_PATH');

@@ -69,7 +69,7 @@ export const getConfig = (): Config => {
   validateTargetHash(targetHash);
 
   const artifactName = getInput('artifact-name') || ARTIFACT_NAME;
-  const branch = getInput('branch') || 'value-regression-action';
+  const branch = getInput('branch') || 'metrics-regression-action';
 
   return {
     githubToken,

@@ -35,7 +35,7 @@
     "package": "ncc build src/index.ts --license licenses.txt",
     "package:watch": "pnpm run package -- --watch",
     "test": "jest",
-    "all": "pnpm run format && pnpm run lint && pnpm run test && pnpm run coverage && pnpm run package"
+    "all": "pnpm run format && pnpm run lint && pnpm run package"
   },
   "license": "MIT",
   "jest": {

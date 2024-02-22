@@ -2,8 +2,11 @@ import { globSync } from 'glob';
 import { exec, ExecOptions } from '@actions/exec';
 import { log } from './logger';
 import { basename, join } from 'path';
+import { mkdirP } from '@actions/io';
 
 export const copyFiles = async (from: string, to: string): Promise<void> => {
+  await mkdirP(to);
+
   const fromPaths = globSync(from);
   for (const fromPath of fromPaths) {
     const fileName = basename(fromPath);

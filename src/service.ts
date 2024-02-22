@@ -125,6 +125,7 @@ export const run = async ({
 const copyActualJsons = async (config: Config): Promise<void> => {
   log.info(`Start copy jsons from ${config.jsonDirectoryPath}`);
   try {
+    capture('ls', [config.jsonDirectoryPath]);
     await copyFiles(join(config.jsonDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
