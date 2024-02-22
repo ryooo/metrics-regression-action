@@ -7,6 +7,7 @@
  */
 
 import * as core from '@actions/core';
+
 import * as main from '../src/main';
 
 // Mock the action's main function

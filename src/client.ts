@@ -1,10 +1,10 @@
-import * as github from '@actions/github';
 import { DefaultArtifactClient } from '@actions/artifact';
-import { backOff } from 'exponential-backoff';
 import { summary } from '@actions/core';
+import * as github from '@actions/github';
+import { backOff } from 'exponential-backoff';
 
-import { Repository } from './repository';
 import { workspace } from './path';
+import { Repository } from './repository';
 import { Artifact, Run } from './run';
 
 export type Octokit = ReturnType<typeof github.getOctokit>;
@@ -32,13 +32,13 @@ export type SummaryClient = {
 
 export type Client = CommentClient & DownloadClient & UploadClient & RunClient & SummaryClient;
 
-export const createClient = (repository: Repository, octokit: Octokit) => {
+export const createClient = (repository: Repository, octokit: Octokit): Client => {
   const artifactClient = new DefaultArtifactClient();
 
   return {
     fetchRuns: async (page: number) => {
       return backOff(
-        () =>
+        async () =>
           octokit.rest.actions.listWorkflowRunsForRepo({
             ...repository,
             per_page: 50,
@@ -49,17 +49,17 @@ export const createClient = (repository: Repository, octokit: Octokit) => {
     },
     fetchArtifacts: async (runId: number) => {
       const input = { ...repository, run_id: runId, per_page: 50 };
-      return backOff(() => octokit.rest.actions.listWorkflowRunArtifacts(input), { numOfAttempts: 5 });
+      return backOff(async () => octokit.rest.actions.listWorkflowRunArtifacts(input), { numOfAttempts: 5 });
     },
     uploadArtifact: async (files: string[], artifactName: string) => {
-      const _ = await backOff(() => artifactClient.uploadArtifact(artifactName, files, workspace()), {
+      await backOff(async () => artifactClient.uploadArtifact(artifactName, files, workspace()), {
         numOfAttempts: 5,
       });
       return;
     },
     downloadArtifact: async (artifactId: number) => {
       return backOff(
-        () =>
+        async () =>
           octokit.rest.actions.downloadArtifact({
             ...repository,
             artifact_id: artifactId,
@@ -69,8 +69,8 @@ export const createClient = (repository: Repository, octokit: Octokit) => {
       );
     },
     postComment: async (issueNumber: number, comment: string) => {
-      const _ = await backOff(
-        () =>
+      await backOff(
+        async () =>
           octokit.rest.issues.createComment({
             ...repository,
             issue_number: issueNumber,

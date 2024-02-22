@@ -1,27 +1,27 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
+import { setFailed } from '@actions/core';
+import { context, getOctokit } from '@actions/github';
 
+import { createClient } from './client';
 import { getConfig } from './config';
 import { getEvent } from './event';
-import { run as serviceRun } from './service';
-import { createClient } from './client';
 import { log } from './logger';
+import { run as serviceRun } from './service';
 
-export const run = async () => {
+export const run = async (): Promise<void> => {
   const config = getConfig();
 
-  const { repo, runId, sha } = github.context;
+  const { repo, runId, sha } = context;
   log.info(`runid = ${runId}, sha = ${sha}`);
 
   const date = new Date().toISOString().split('T')[0];
   const event = getEvent();
   log.info(`succeeded to get event, number = ${event.number}`);
 
-  const octokit = github.getOctokit(config.githubToken);
+  const octokit = getOctokit(config.githubToken);
   const client = createClient(repo, octokit);
 
   log.info(`start`);
   await serviceRun({ event, runId, sha, client, date, config });
 };
 
-run().catch(e => core.setFailed(e.message));
+run().catch(e => setFailed(e.message));

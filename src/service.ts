@@ -1,36 +1,35 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { promises } from 'fs';
+import { join, dirname } from 'path';
+
+import Zip, { IZipEntry } from 'adm-zip';
 import { sync as globSync } from 'glob';
 import makeDir from 'make-dir';
-import Zip from 'adm-zip';
-import { log } from './logger';
-import { Config } from './config';
-import { Event } from './event';
-import { findRunAndArtifact } from './run';
-import { compare, CompareOutput } from './compare';
-import { createCommentWithTarget, createCommentWithoutTarget } from './comment';
-import * as constants from './constants';
-import { workspace } from './path';
+
 import { DownloadClient, UploadClient, Client } from './client';
+import { createCommentWithTarget, createCommentWithoutTarget } from './comment';
+import { compare, CompareOutput } from './compare';
+import { Config } from './config';
+import { ACTUAL_DIR_NAME, EXPECTED_DIR_NAME } from './constants';
+import { Event } from './event';
+import { log } from './logger';
+import { workspace } from './path';
+import { findRunAndArtifact } from './run';
 
 const { cpy } = require('cpy');
 
 // Download expected jsons from target artifact, and save on expected directory.
-const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: number) => {
+const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: number): Promise<void> => {
   log.info(`Start to download expected jsons, artifact id = ${latestArtifactId}`);
   try {
     const zip = await client.downloadArtifact(latestArtifactId);
     await Promise.all(
       new Zip(Buffer.from(zip.data as any))
         .getEntries()
-        .filter((f: any) => !f.isDirectory && f.entryName.startsWith(constants.ACTUAL_DIR_NAME))
-        .map(async (file: any) => {
-          const f = path.join(
-            workspace(),
-            file.entryName.replace(constants.ACTUAL_DIR_NAME, constants.EXPECTED_DIR_NAME),
-          );
-          await makeDir(path.dirname(f));
-          await fs.promises.writeFile(f, file.getData());
+        .filter((f: IZipEntry) => !f.isDirectory && f.entryName.startsWith(ACTUAL_DIR_NAME))
+        .map(async (file: IZipEntry): Promise<void> => {
+          const f = join(workspace(), file.entryName.replace(ACTUAL_DIR_NAME, EXPECTED_DIR_NAME));
+          await makeDir(dirname(f));
+          await promises.writeFile(f, file.getData());
         }),
     ).catch(e => {
       log.error('Failed to extract jsons.', e);
@@ -45,11 +44,11 @@ const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: n
   }
 };
 
-const copyActualJsons = async (jsonPath: string) => {
+const copyActualJsons = async (jsonPath: string): Promise<void> => {
   log.info(`Start copy jsons from ${jsonPath}`);
 
   try {
-    await cpy(path.join(jsonPath, `**/*.json`), path.join(workspace(), constants.ACTUAL_DIR_NAME));
+    await cpy(join(jsonPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
   }
@@ -60,7 +59,7 @@ const compareAndUploadArtifact = async (client: UploadClient, config: Config): P
   const result = await compare(config);
   log.debug('compare result', result);
 
-  const files = globSync(path.join(workspace(), '**/*'));
+  const files = globSync(join(workspace(), '**/*'));
   log.info('Start upload artifact');
 
   try {
@@ -74,7 +73,7 @@ const compareAndUploadArtifact = async (client: UploadClient, config: Config): P
   return result;
 };
 
-const init = async (config: Config) => {
+const init = async (config: Config): Promise<void> => {
   log.info(`start initialization.`);
   // Create workspace
   await makeDir(workspace());
@@ -101,7 +100,7 @@ export const run = async ({
   client: Client;
   date: string;
   config: Config;
-}) => {
+}): Promise<void> => {
   // Setup directory for artifact and copy jsons.
   await init(config);
 

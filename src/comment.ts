@@ -1,8 +1,8 @@
 import { basename } from 'path';
 
+import { CompareOutput } from './compare';
 import { Event } from './event';
 import { Run } from './run';
-import { CompareOutput } from './compare';
 
 export type CreateCommentWithTargetInput = {
   event: Event;
@@ -22,11 +22,11 @@ export type CreateCommentWithoutTargetInput = {
   artifactName: string;
 };
 
-const isSuccess = (result: CompareOutput) => {
+const isSuccess = (result: CompareOutput): boolean => {
   return result.failedItems.length === 0 && result.newItems.length === 0 && result.deletedItems.length === 0;
 };
 
-const badge = (result: CompareOutput) => {
+const badge = (result: CompareOutput): string => {
   if (result.failedItems.length) {
     return '![change detected](https://img.shields.io/badge/%E2%9C%94%20reg-change%20detected-orange)';
   }
@@ -64,9 +64,9 @@ ${result.failedItems
   .map(item => {
     const base = basename(item);
     const filename = encodeURIComponent(base);
-    const actual = baseUrl + 'actual/' + filename + '?raw=true';
-    const expected = baseUrl + 'expected/' + filename + '?raw=true';
-    const diff = baseUrl + 'diff/' + filename + '?raw=true';
+    const actual = `${baseUrl}actual/${filename}?raw=true`;
+    const expected = `${baseUrl}expected/${filename}?raw=true`;
+    const diff = `${baseUrl}diff/${filename}?raw=true`;
 
     return `### \`${base}\`
    
@@ -91,7 +91,7 @@ ${result.newItems
   .map(item => {
     const base = basename(item);
     const filename = encodeURIComponent(base);
-    const img = baseUrl + 'actual/' + filename + '?raw=true';
+    const img = `${baseUrl}actual/${filename}?raw=true`;
     return `### \`${base}\`
        
 |  |
@@ -115,7 +115,7 @@ ${result.deletedItems
   .map(item => {
     const base = basename(item);
     const filename = encodeURIComponent(base);
-    const img = baseUrl + 'expected/' + filename + '?raw=true';
+    const img = `${baseUrl}expected/${filename}?raw=true`;
     return `### \`${base}\`
        
 |  |

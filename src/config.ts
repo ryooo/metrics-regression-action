@@ -1,5 +1,7 @@
-import * as core from '@actions/core';
 import { statSync } from 'fs';
+
+import { getInput } from '@actions/core';
+
 import { ARTIFACT_NAME } from './constants';
 
 export interface Config {
@@ -10,13 +12,13 @@ export interface Config {
   branch: string;
 }
 
-const validateGitHubToken = (githubToken: string | undefined) => {
+const validateGitHubToken = (githubToken: string | undefined): void => {
   if (!githubToken) {
     throw new Error(`'github-token' is not set. Please give API token.`);
   }
 };
 
-const validateJsonDirPath = (path: string | undefined) => {
+const validateJsonDirPath = (path: string | undefined): void => {
   if (!path) {
     throw new Error(`'json-directory-path' is not set. Please specify path to json directory.`);
   }
@@ -28,8 +30,9 @@ const validateJsonDirPath = (path: string | undefined) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getBoolInput = (name: string): boolean => {
-  const input = core.getInput(name);
+  const input = getInput(name);
   if (!input) {
     return false;
   }
@@ -39,15 +42,16 @@ const getBoolInput = (name: string): boolean => {
   return input === 'true';
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getNumberInput = (name: string): number | null => {
-  const v = core.getInput(name);
+  const v = getInput(name);
   if (!v) return null;
   const n = Number(v);
   if (typeof n === 'number') return n;
   throw new Error(`'${name}' input must be number value but got '${n}'`);
 };
 
-const validateTargetHash = (h: string | null) => {
+const validateTargetHash = (h: string | null): void => {
   if (!h) return;
   if (!/[0-9a-f]{5,40}/.test(h)) {
     throw new Error(`'target-hash' input must be commit hash but got '${h}'`);
@@ -55,17 +59,17 @@ const validateTargetHash = (h: string | null) => {
 };
 
 export const getConfig = (): Config => {
-  const githubToken = core.getInput('github-token');
+  const githubToken = getInput('github-token');
   validateGitHubToken(githubToken);
 
-  const jsonDirectoryPath = core.getInput('json-directory-path');
+  const jsonDirectoryPath = getInput('json-directory-path');
   validateJsonDirPath(jsonDirectoryPath);
 
-  const targetHash = core.getInput('target-hash') || null;
+  const targetHash = getInput('target-hash') || null;
   validateTargetHash(targetHash);
 
-  const artifactName = core.getInput('artifact-name') || ARTIFACT_NAME;
-  const branch = core.getInput('branch') || 'value-regression-action';
+  const artifactName = getInput('artifact-name') || ARTIFACT_NAME;
+  const branch = getInput('branch') || 'value-regression-action';
 
   return {
     githubToken,

@@ -1,4 +1,5 @@
 import { ExecOptions, exec } from '@actions/exec';
+
 import { log } from './logger';
 
 interface ExecResult {
