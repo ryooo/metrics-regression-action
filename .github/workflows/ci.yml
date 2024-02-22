@@ -65,7 +65,7 @@ jobs:
         id: output
         run: echo "${{ steps.test-action.outputs.result }}"
 
-      - name: Test Local Action
+      - name: Test Local Action(with target hash)
         id: test-action-with-target-hash
         uses: ./
         with:
@@ -73,6 +73,6 @@ jobs:
           json-directory-path: "__sample__"
           target-hash: '7ab49d64ceaa37d19e38a105630ceb883f36982c'
 
-      - name: Print Output
-        id: output
+      - name: Print Output(with target hash)
+        id: output-with-target-hash
         run: echo "${{ steps.test-action-with-target-hash.outputs.result }}"
