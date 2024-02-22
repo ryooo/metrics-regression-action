@@ -91,8 +91,12 @@ export const run = async ({
     return;
   }
 
-  // Download and copy expected jsons to workspace.
-  await downloadExpectedJsons(client, runAndArtifact.artifact.id);
+  if (config.expectedDirectoryPath === '') {
+    // Download and copy expected jsons to workspace.
+    await downloadExpectedJsons(client, runAndArtifact.artifact.id);
+  } else {
+    await copyExpectedJsons(config);
+  }
 
   // compare actual <=> expected files.
   //  upload files exist on the workspace as GitHub Actions run's artifact.
@@ -125,14 +129,28 @@ export const run = async ({
  * @param config
  */
 const copyActualJsons = async (config: Config): Promise<void> => {
-  log.info(`Start copy jsons from ${config.actualDirectoryPath}, to ${join(workspace(), ACTUAL_DIR_NAME)}`);
+  log.info(`Start copy actual jsons from ${config.actualDirectoryPath}, to ${join(workspace(), ACTUAL_DIR_NAME)}`);
   try {
     await copyFiles(join(config.actualDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
   }
+};
 
-  log.info(`Succeeded to initialization.`);
+/**
+ * copy expected json to workspace.
+ *
+ * @param config
+ */
+const copyExpectedJsons = async (config: Config): Promise<void> => {
+  log.info(
+    `Start copy expected jsons from ${config.expectedDirectoryPath}, to ${join(workspace(), EXPECTED_DIR_NAME)}`,
+  );
+  try {
+    await copyFiles(join(config.expectedDirectoryPath, `**/*.json`), join(workspace(), EXPECTED_DIR_NAME));
+  } catch (e) {
+    log.error(`Failed to copy jsons ${e}`);
+  }
 };
 
 /**
