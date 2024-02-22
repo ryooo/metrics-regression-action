@@ -15,7 +15,7 @@ import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
 import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
-import { copyFiles } from './helper';
+import { capture, copyFiles } from './helper';
 
 /**
  * Compare and post report on comment.
@@ -52,6 +52,7 @@ export const run = async ({
 }): Promise<void> => {
   log.info(`start initialization.`);
   // Create workspace
+  capture('rm', ['-rf', workspace()]);
   await makeDir(workspace());
   await copyActualJsons(config);
 
