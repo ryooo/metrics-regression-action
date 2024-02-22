@@ -26,6 +26,10 @@ jobs:
           node-version-file: .node-version
           cache: npm
 
+      - run: pnpm install
+      - run: pnpm package
+
+
       - name: Install Dependencies
         id: npm-ci
         run: pnpm ci
@@ -50,6 +54,9 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
+
+      - run: pnpm install
+      - run: pnpm package
 
       - name: Test Local Action
         id: test-action
