@@ -1,4 +1,4 @@
-import { setFailed, setOutput } from '@actions/core';
+import { setOutput } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 
 import { createClient } from './client';
@@ -24,5 +24,3 @@ export const run = async (): Promise<void> => {
   await serviceRun({ event, runId, sha, client, date, config });
   setOutput('result', 'ok');
 };
-
-run().catch(e => setFailed(e.message));
