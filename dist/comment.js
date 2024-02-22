@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCommentWithoutTarget = exports.createCommentWithTarget = void 0;
+exports.createCommentWithoutRun = exports.createCommentWithRun = void 0;
 const metric_1 = require("./metric");
-const createCommentWithTarget = ({ event, artifactName, sha: currentHash, targetRun, result, date, }) => {
+const createCommentWithRun = ({ event, artifactName, sha: currentHash, targetRun, result, }) => {
     const [owner, repoName] = event.repository.full_name.split('/');
     const targetHash = targetRun.head_sha;
     const currentHashShort = currentHash.slice(0, 7);
@@ -23,8 +23,8 @@ ${accordionMetricsReport('⚠️ Deleted metrics', result.deletedMetrics)}
 `;
     return body;
 };
-exports.createCommentWithTarget = createCommentWithTarget;
-const createCommentWithoutTarget = ({ result, artifactName }) => {
+exports.createCommentWithRun = createCommentWithRun;
+const createCommentWithoutRun = ({ result, artifactName }) => {
     const body = `## ArtifactName: \`${artifactName}\`
   
 Failed to find a target artifact.
@@ -34,7 +34,7 @@ All items will be treated as new items and will be used as expected data for the
 ${result.newMetrics.length > 0 ? metricsToTable(result.newMetrics) : 'no metrics found.'}`;
     return body;
 };
-exports.createCommentWithoutTarget = createCommentWithoutTarget;
+exports.createCommentWithoutRun = createCommentWithoutRun;
 const metricsReport = (title, metrics, messageForNothing = '') => {
     const report = metricsToTable(metrics, messageForNothing);
     return `

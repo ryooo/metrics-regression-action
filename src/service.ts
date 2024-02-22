@@ -14,8 +14,8 @@ import { Event } from './event';
 import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
-
-const { cpy } = require('cpy');
+import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
+import { copyFiles } from './helper';
 
 /**
  * Compare and post report on comment.
@@ -26,6 +26,7 @@ const { cpy } = require('cpy');
  * 5. compare actual <=> expected files.
  * 6. upload files exist on the workspace as GitHub Actions run's artifact.
  * 7. post report comment.
+ * 8. push workspace files to GitHub repository.
  *
  * @param event
  * @param runId
@@ -84,13 +85,18 @@ export const run = async ({
         artifactName: config.artifactName,
         result,
       });
+      log.info(comment);
       await client.postComment(event.number, comment);
     }
     return;
   }
 
-  // Download and copy expected jsons to workspace.
-  await downloadExpectedJsons(client, runAndArtifact.artifact.id);
+  if (config.expectedDirectoryPath === '') {
+    // Download and copy expected jsons to workspace.
+    await downloadExpectedJsons(client, runAndArtifact.artifact.id);
+  } else {
+    await copyExpectedJsons(config);
+  }
 
   // compare actual <=> expected files.
   //  upload files exist on the workspace as GitHub Actions run's artifact.
@@ -107,7 +113,10 @@ export const run = async ({
     regBranch: config.branch,
   });
 
+  log.info(comment);
   await client.postComment(event.number, comment);
+
+  await pushWorkspaceToBranch(result, runId, date, config);
 
   log.info('post summary comment');
 
@@ -120,14 +129,28 @@ export const run = async ({
  * @param config
  */
 const copyActualJsons = async (config: Config): Promise<void> => {
-  log.info(`Start copy jsons from ${config.jsonDirectoryPath}`);
+  log.info(`Start copy actual jsons from ${config.actualDirectoryPath}, to ${join(workspace(), ACTUAL_DIR_NAME)}`);
   try {
-    await cpy(join(config.jsonDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
+    await copyFiles(join(config.actualDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
   }
+};
 
-  log.info(`Succeeded to initialization.`);
+/**
+ * copy expected json to workspace.
+ *
+ * @param config
+ */
+const copyExpectedJsons = async (config: Config): Promise<void> => {
+  log.info(
+    `Start copy expected jsons from ${config.expectedDirectoryPath}, to ${join(workspace(), EXPECTED_DIR_NAME)}`,
+  );
+  try {
+    await copyFiles(join(config.expectedDirectoryPath, `**/*.json`), join(workspace(), EXPECTED_DIR_NAME));
+  } catch (e) {
+    log.error(`Failed to copy jsons ${e}`);
+  }
 };
 
 /**
@@ -142,7 +165,7 @@ const compareAndUploadArtifact = async (client: UploadClient, config: Config): P
   log.debug('compare result', result);
 
   const files = globSync(join(workspace(), '**/*'));
-  log.info('Start upload artifact');
+  log.info('Start upload artifact', config.artifactName, files.join('\n'));
 
   try {
     await client.uploadArtifact(files, config.artifactName);
@@ -184,5 +207,30 @@ const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: n
       return;
     }
     log.error(`Failed to download artifact ${e}`);
+  }
+};
+
+const pushWorkspaceToBranch = async (
+  result: CompareOutput,
+  runId: number,
+  date: string,
+  config: Config,
+): Promise<void> => {
+  if (
+    result.newMetrics.length !== 0 ||
+    result.deletedMetrics.length !== 0 ||
+    result.withinThresholdMetrics.length !== 0 ||
+    result.overThresholdMetrics.length !== 0
+  ) {
+    await pushFilesToBranch({
+      githubToken: config.githubToken,
+      runId,
+      result,
+      branch: config.branch,
+      targetDir: createPushDirName({ runId, artifactName: config.artifactName, date }),
+      env: process.env as EnvironmentVariables,
+      // commitName: undefined,
+      // commitEmail: undefined,
+    });
   }
 };

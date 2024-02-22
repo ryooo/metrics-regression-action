@@ -85,6 +85,7 @@ const accordionMetricsReport = (
 <summary>${title}</summary>
 
 ${report}
+
 </details>
   `;
 };

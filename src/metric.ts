@@ -77,5 +77,6 @@ const numberToStr = (value: number, digit: number): string => {
 };
 
 export const metricToTd = (m: Metric | ComparedMetric): string => {
-  return `| ${m.fileName} | ${m.metricName} | ${isComparedMetric(m) ? `${m.actualStr}(${m.diffStr})` : m.value} |`;
+  const fileName = m.fileName.replace('.json', '');
+  return `| ${fileName} | ${m.metricName} | ${isComparedMetric(m) ? `${m.actualStr}(${m.diffStr})` : m.value} |`;
 };

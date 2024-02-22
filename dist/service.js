@@ -15,7 +15,8 @@ const constants_1 = require("./constants");
 const logger_1 = require("./logger");
 const path_2 = require("./path");
 const run_1 = require("./run");
-const { cpy } = require('cpy');
+const push_1 = require("./push");
+const helper_1 = require("./helper");
 /**
  * Compare and post report on comment.
  * 1. create workspace.
@@ -25,6 +26,7 @@ const { cpy } = require('cpy');
  * 5. compare actual <=> expected files.
  * 6. upload files exist on the workspace as GitHub Actions run's artifact.
  * 7. post report comment.
+ * 8. push workspace files to GitHub repository.
  *
  * @param event
  * @param runId
@@ -59,7 +61,7 @@ const run = async ({ event, runId, sha, client, date, config, }) => {
         const result = await compareAndUploadArtifact(client, config);
         // If we have current run, add comment to PR.
         if (runId) {
-            const comment = (0, comment_1.createCommentWithoutTarget)({
+            const comment = (0, comment_1.createCommentWithoutRun)({
                 event,
                 runId,
                 artifactName: config.artifactName,
@@ -75,7 +77,7 @@ const run = async ({ event, runId, sha, client, date, config, }) => {
     //  upload files exist on the workspace as GitHub Actions run's artifact.
     const result = await compareAndUploadArtifact(client, config);
     logger_1.log.info(result);
-    const comment = (0, comment_1.createCommentWithTarget)({
+    const comment = (0, comment_1.createCommentWithRun)({
         event,
         runId,
         sha,
@@ -86,6 +88,7 @@ const run = async ({ event, runId, sha, client, date, config, }) => {
         regBranch: config.branch,
     });
     await client.postComment(event.number, comment);
+    await pushWorkspaceToBranch(result, runId, date, config);
     logger_1.log.info('post summary comment');
     await client.summary(comment);
 };
@@ -98,7 +101,7 @@ exports.run = run;
 const copyActualJsons = async (config) => {
     logger_1.log.info(`Start copy jsons from ${config.jsonDirectoryPath}`);
     try {
-        await cpy((0, path_1.join)(config.jsonDirectoryPath, `**/*.json`), (0, path_1.join)((0, path_2.workspace)(), constants_1.ACTUAL_DIR_NAME));
+        await (0, helper_1.copyFiles)((0, path_1.join)(config.jsonDirectoryPath, `**/*.json`), (0, path_1.join)((0, path_2.workspace)(), constants_1.ACTUAL_DIR_NAME));
     }
     catch (e) {
         logger_1.log.error(`Failed to copy jsons ${e}`);
@@ -115,8 +118,14 @@ const copyActualJsons = async (config) => {
 const compareAndUploadArtifact = async (client, config) => {
     const result = await (0, compare_1.compare)(config);
     logger_1.log.debug('compare result', result);
+    logger_1.log.info((0, path_2.workspace)());
+    logger_1.log.info((0, path_1.join)((0, path_2.workspace)(), '**/*'));
     const files = (0, glob_1.sync)((0, path_1.join)((0, path_2.workspace)(), '**/*'));
-    logger_1.log.info('Start upload artifact');
+    logger_1.log.info('Start upload artifact', files.join('\n'));
+    logger_1.log.info((await (0, helper_1.capture)('pwd', [])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls', ['-la', '/'])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls', ['-la'])).stdout);
+    logger_1.log.info((await (0, helper_1.capture)('ls ', ['-la', (0, path_2.workspace)()])).stdout);
     try {
         await client.uploadArtifact(files, config.artifactName);
     }
@@ -155,6 +164,23 @@ const downloadExpectedJsons = async (client, latestArtifactId) => {
             return;
         }
         logger_1.log.error(`Failed to download artifact ${e}`);
+    }
+};
+const pushWorkspaceToBranch = async (result, runId, date, config) => {
+    if (result.newMetrics.length !== 0 ||
+        result.deletedMetrics.length !== 0 ||
+        result.withinThresholdMetrics.length !== 0 ||
+        result.overThresholdMetrics.length !== 0) {
+        await (0, push_1.pushFilesToBranch)({
+            githubToken: config.githubToken,
+            runId,
+            result,
+            branch: config.branch,
+            targetDir: (0, push_1.createPushDirName)({ runId, artifactName: config.artifactName, date }),
+            env: process.env,
+            // commitName: undefined,
+            // commitEmail: undefined,
+        });
     }
 };
 //# sourceMappingURL=service.js.map

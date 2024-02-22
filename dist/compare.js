@@ -7,11 +7,11 @@ exports.compare = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 const logger_1 = require("./logger");
 const path_1 = require("./path");
-const path_2 = require("path");
 const glob_1 = require("glob");
 const constants_1 = require("./constants");
 const metric_1 = require("./metric");
-const compare = async (config) => {
+const path_2 = require("path");
+const compare = async (_config) => {
     const result = {
         overThresholdMetrics: [],
         withinThresholdMetrics: [],

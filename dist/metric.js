@@ -50,7 +50,7 @@ exports.compareMetrics = compareMetrics;
 const numberToStr = (value, digit) => {
     if (digit > 0) {
         const str = Math.floor(value * 10 * digit).toString();
-        return str.slice(0, str.length - digit) + '.' + str.slice(-1 * digit);
+        return `${str.slice(0, str.length - digit)}.${str.slice(-1 * digit)}`;
     }
     return Math.floor(value).toString();
 };
