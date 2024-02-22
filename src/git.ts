@@ -1,39 +1,7 @@
-import { ExecOptions, exec } from '@actions/exec';
+import { ExecOptions } from '@actions/exec';
+
 import { log } from './logger';
-
-interface ExecResult {
-  stdout: string;
-  stderr: string;
-  code: number | null;
-}
-
-const capture = async (cmd: string, args: string[], options: ExecOptions = {}): Promise<ExecResult> => {
-  const res: ExecResult = {
-    stdout: '',
-    stderr: '',
-    code: null,
-  };
-
-  try {
-    const code = await exec(cmd, args, {
-      ...options,
-      listeners: {
-        stdout(data: Buffer) {
-          res.stdout += data.toString();
-        },
-        stderr(data: Buffer) {
-          res.stderr += data.toString();
-        },
-      },
-    });
-    res.code = code;
-    return res;
-  } catch (err) {
-    const msg = `Command '${cmd}' failed with args '${args.join(' ')}': ${res.stderr}: ${err}`;
-    log.debug(`@actions/exec.exec() threw an error: ${msg}`);
-    throw new Error(msg);
-  }
-};
+import { capture, ExecResult } from './helper';
 
 export const findTargetHash = async (baseSha: string, headSha: string): Promise<string> => {
   log.info(`base sha is ${baseSha}, head sha is ${headSha}`);

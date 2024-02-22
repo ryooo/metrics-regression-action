@@ -1,6 +1,7 @@
-import * as path from 'path';
-import * as constants from './constants';
+import { join } from 'path';
 
-export const workspace = () => {
-  return path.join('./', constants.WORKSPACE_DIR_NAME);
+import { WORKSPACE_DIR_NAME } from './constants';
+
+export const workspace = (): string => {
+  return join('./', WORKSPACE_DIR_NAME);
 };

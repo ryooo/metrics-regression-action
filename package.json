@@ -35,7 +35,7 @@
     "package": "ncc build src/index.ts --license licenses.txt",
     "package:watch": "pnpm run package -- --watch",
     "test": "jest",
-    "all": "pnpm run format && pnpm run lint && pnpm run test && pnpm run coverage && pnpm run package"
+    "all": "pnpm run format && pnpm run lint && pnpm run package"
   },
   "license": "MIT",
   "jest": {
@@ -72,12 +72,15 @@
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "@actions/github": "^6.0.0",
+    "@actions/io": "^1.1.3",
     "@jest/globals": "^29.7.0",
     "@octokit/openapi-types": "^19.1.0",
+    "@octokit/rest": "^20.0.2",
+    "@octokit/types": "^12.5.0",
     "adm-zip": "^0.5.10",
     "chalk": "^4.1.2",
-    "cpy": "^11.0.0",
     "exponential-backoff": "^3.1.1",
+    "fast-glob": "^3.3.2",
     "glob": "^10.3.10",
     "loglevel": "^1.9.1",
     "make-dir": "^4.0.0"

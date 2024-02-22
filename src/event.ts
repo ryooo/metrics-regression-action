@@ -1,6 +1,7 @@
-import { components } from '@octokit/openapi-types';
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
+
 import { log } from './logger';
+import { components } from '@octokit/openapi-types';
 
 export type Event = {
   before: string | null;
@@ -14,9 +15,11 @@ export type Event = {
 const readEvent = (): Event | undefined => {
   try {
     if (process.env.GITHUB_EVENT_PATH) {
-      return JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+      return JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
     }
-  } catch (e) {}
+  } catch (e) {
+    // noop
+  }
 };
 
 export const getEvent = (): Event => {
