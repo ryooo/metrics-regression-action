@@ -59,21 +59,21 @@ jobs:
         uses: ./
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          json-directory-path: "__sample__"
+          actual-directory-path: "__sample-actual__"
 
       - name: Print Output
         id: output
         run: echo "${{ steps.test-action.outputs.result }}"
 
-      - name: Test Local Action(with target hash)
-        id: test-action-with-target-hash
+      - name: Test Local Action(with expected)
+        id: test-action-with-expected
         uses: ./
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          json-directory-path: "__sample__"
-          target-hash: '7ab49d64ceaa37d19e38a105630ceb883f36982c'
-          artifact-name: 'metrics-with-target-hash'
+          actual-directory-path: "__sample-actual__"
+          expected-directory-path: "__sample-expected__"
+          artifact-name: 'metrics-with-expected'
 
-      - name: Print Output(with target hash)
-        id: output-with-target-hash
-        run: echo "${{ steps.test-action-with-target-hash.outputs.result }}"
+      - name: Print Output(with expected)
+        id: output-with-expected
+        run: echo "${{ steps.test-action-with-expected.outputs.result }}"

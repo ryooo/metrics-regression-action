@@ -12,9 +12,12 @@ inputs:
   github-token:
     description: 'GitHub API access token.It is used to upload test report and add comment to pull request.'
     required: true
-  json-directory-path:
-    description: "Path to json files directory.The images stored in this directory will be compared with the expected json files from the last upload."
+  actual-directory-path:
+    description: "Path to json files directory.The json files stored in this directory will be compared with the expected json files from the last upload."
     required: true
+  expected-directory-path:
+    description: "Path to json files directory.The json files stored in this directory will be compared as the expected json files."
+    required: false
   target-hash:
     description: "The commit hash to be compared."
     required: false

@@ -125,9 +125,9 @@ export const run = async ({
  * @param config
  */
 const copyActualJsons = async (config: Config): Promise<void> => {
-  log.info(`Start copy jsons from ${config.jsonDirectoryPath}, to ${join(workspace(), ACTUAL_DIR_NAME)}`);
+  log.info(`Start copy jsons from ${config.actualDirectoryPath}, to ${join(workspace(), ACTUAL_DIR_NAME)}`);
   try {
-    await copyFiles(join(config.jsonDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
+    await copyFiles(join(config.actualDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
   }

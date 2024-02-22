@@ -6,7 +6,8 @@ import { ARTIFACT_NAME } from './constants';
 import { log } from './logger';
 
 export interface Config {
-  jsonDirectoryPath: string;
+  actualDirectoryPath: string;
+  expectedDirectoryPath: string;
   githubToken: string;
   targetHash: string | null;
   artifactName: string;
@@ -19,15 +20,27 @@ const validateGitHubToken = (githubToken: string | undefined): void => {
   }
 };
 
-const validateJsonDirPath = (path: string | undefined): void => {
+const validateActualDirPath = (path: string | undefined): void => {
   if (!path) {
-    throw new Error(`'json-directory-path' is not set. Please specify path to json directory.`);
+    throw new Error(`'actual-directory-path' is not set. Please specify path to json directory.`);
   }
   try {
     const s = statSync(path);
     if (s.isDirectory()) return;
   } catch (_) {
-    throw new Error(`'json-directory-path' is not directory. Please specify path to json directory.`);
+    throw new Error(`'actual-directory-path' is not directory. Please specify path to json directory.`);
+  }
+};
+
+const validateExpectedDirPath = (path: string | undefined): void => {
+  if (!path) {
+    return;
+  }
+  try {
+    const s = statSync(path);
+    if (s.isDirectory()) return;
+  } catch (_) {
+    throw new Error(`'expected-directory-path' is not directory. Please specify path to json directory.`);
   }
 };
 
@@ -63,8 +76,11 @@ export const getConfig = (): Config => {
   const githubToken = getInput('github-token');
   validateGitHubToken(githubToken);
 
-  const jsonDirectoryPath = getInput('json-directory-path');
-  validateJsonDirPath(jsonDirectoryPath);
+  const actualDirectoryPath = getInput('actual-directory-path');
+  validateActualDirPath(actualDirectoryPath);
+
+  const expectedDirectoryPath = getInput('expected-directory-path');
+  validateExpectedDirPath(expectedDirectoryPath);
 
   const targetHash = getInput('target-hash') || null;
   validateTargetHash(targetHash);
@@ -75,7 +91,8 @@ export const getConfig = (): Config => {
   log.info(
     `config is ${{
       githubToken,
-      jsonDirectoryPath,
+      actualDirectoryPath,
+      expectedDirectoryPath,
       targetHash,
       artifactName,
       branch,
@@ -84,7 +101,8 @@ export const getConfig = (): Config => {
 
   return {
     githubToken,
-    jsonDirectoryPath,
+    actualDirectoryPath,
+    expectedDirectoryPath,
     targetHash,
     artifactName,
     branch,
