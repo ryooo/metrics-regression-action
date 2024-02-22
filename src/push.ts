@@ -45,8 +45,7 @@ import { backOff } from 'exponential-backoff';
 import { globSync } from 'glob';
 import { ACTUAL_DIR_NAME, EXPECTED_DIR_NAME } from './constants';
 import { join } from 'path';
-
-const { cpy } = require('cpy');
+import { copyFiles } from './helper';
 
 export type PushImagesInput = {
   githubToken: string;
@@ -154,7 +153,7 @@ export const pushFilesToBranch = async (input: PushImagesInput): Promise<void> =
   // Make sure the destination sourceDir exists
   await mkdirP(path.resolve(REPO_TEMP, destDir));
 
-  await copyFiles(REPO_TEMP, destDir);
+  await copyFilesWorkspaceToRepository(REPO_TEMP, destDir);
 
   await add(execOptions);
 
@@ -192,20 +191,16 @@ const genConfig = (input: PushImagesInput): Config => {
   return config;
 };
 
-const copyFiles = async (temp: string, dest: string): Promise<void> => {
+const copyFilesWorkspaceToRepository = async (temp: string, dest: string): Promise<void> => {
   log.info(`Copying all files`);
 
-  const expectedFiles = globSync(join(workspace(), EXPECTED_DIR_NAME, '**/*.json'));
-  if (expectedFiles.length > 0) {
-    log.info(`Copying expected files`);
-    await cpy(expectedFiles, `${temp}/${dest}/expected/`);
-  }
+  log.info(`Copying expected files`);
+  const expectedPattern = join(workspace(), EXPECTED_DIR_NAME, '**/*.json');
+  await copyFiles(expectedPattern, `${temp}/${dest}/expected/`);
 
-  const actualFiles = globSync(join(workspace(), ACTUAL_DIR_NAME, '**/*.json'));
-  if (actualFiles.length > 0) {
-    log.info(`Copying new files`);
-    await cpy(actualFiles, `${temp}/${dest}/actual/`);
-  }
+  log.info(`Copying new files`);
+  const actualPattern = join(workspace(), ACTUAL_DIR_NAME, '**/*.json');
+  await copyFiles(actualPattern, `${temp}/${dest}/actual/`);
   return;
 };
 

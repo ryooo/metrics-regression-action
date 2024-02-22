@@ -77,7 +77,6 @@
     "@octokit/openapi-types": "^19.1.0",
     "adm-zip": "^0.5.10",
     "chalk": "^4.1.2",
-    "cpy": "^11.0.0",
     "exponential-backoff": "^3.1.1",
     "fast-glob": "^3.3.2",
     "glob": "^10.3.10",

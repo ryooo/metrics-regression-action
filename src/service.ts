@@ -15,8 +15,7 @@ import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
 import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
-
-const { cpy } = require('cpy');
+import { copyFiles } from './helper';
 
 /**
  * Compare and post report on comment.
@@ -126,7 +125,7 @@ export const run = async ({
 const copyActualJsons = async (config: Config): Promise<void> => {
   log.info(`Start copy jsons from ${config.jsonDirectoryPath}`);
   try {
-    await cpy(join(config.jsonDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
+    await copyFiles(join(config.jsonDirectoryPath, `**/*.json`), join(workspace(), ACTUAL_DIR_NAME));
   } catch (e) {
     log.error(`Failed to copy jsons ${e}`);
   }
@@ -146,7 +145,7 @@ const compareAndUploadArtifact = async (client: UploadClient, config: Config): P
   log.debug('compare result', result);
 
   const files = globSync(join(workspace(), '**/*'));
-  log.info('Start upload artifact');
+  log.info('Start upload artifact', files.join('\n'));
 
   try {
     await client.uploadArtifact(files, config.artifactName);
