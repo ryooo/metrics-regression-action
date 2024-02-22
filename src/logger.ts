@@ -5,7 +5,6 @@ if (process.env.NODE_ENV === 'debug') {
 } else {
   l.setLevel('info');
 }
-
 export const log = {
   ...l,
 };
