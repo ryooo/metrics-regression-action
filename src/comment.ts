@@ -41,11 +41,11 @@ ${badge(result)}
 
 ${isSuccess(result) ? '✨✨ There is no over threshold metrics! ✨✨' : ''}
 
-${metricsReport('✅ Over threshold metrics', result.overThresholdMetrics)}
-${metricsReport('📝 Within threshold metrics', result.withinThresholdMetrics)}
+${metricsReport('⚠️ Over threshold metrics', result.overThresholdMetrics)}
+${metricsReport('✅ Within threshold metrics', result.withinThresholdMetrics)}
 
 ${accordionMetricsReport('🆕 New metrics', result.newMetrics)}
-${accordionMetricsReport('⚠️ Deleted metrics', result.deletedMetrics)}
+${accordionMetricsReport('📝 Deleted metrics', result.deletedMetrics)}
 `;
 };
 
