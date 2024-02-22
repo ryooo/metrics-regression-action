@@ -52,7 +52,7 @@ export const run = async ({
 }): Promise<void> => {
   log.info(`start initialization.`);
   // Create workspace
-  capture('rm', ['-rf', workspace()]);
+  await capture('rm', ['-rf', workspace()]);
   await makeDir(workspace());
   await copyActualJsons(config);
 

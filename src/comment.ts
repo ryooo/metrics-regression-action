@@ -55,7 +55,7 @@ export const createCommentWithoutRun = ({ result, artifactName }: CreateCommentW
 Failed to find a target artifact.
 All items will be treated as new items and will be used as expected data for the next time.
 
-![target not found](https://img.shields.io/badge/%E2%9C%94%20reg-new%20items-blue)
+![target not found](https://img.shields.io/badge/%E2%9C%94%20metrics-new%20items-blue)
 ${result.newMetrics.length > 0 ? metricsToTable(result.newMetrics) : 'no metrics found.'}`;
 };
 
@@ -105,10 +105,10 @@ const isSuccess = (result: CompareOutput): boolean => {
 
 const badge = (result: CompareOutput): string => {
   if (result.overThresholdMetrics.length) {
-    return '![change detected](https://img.shields.io/badge/%E2%9C%94%20reg-change%20detected-orange)';
+    return '![change detected](https://img.shields.io/badge/%E2%9C%94%20metrics-change%20detected-orange)';
   }
   if (result.newMetrics.length) {
-    return '![new items](https://img.shields.io/badge/%E2%9C%94%20reg-new%20items-green)';
+    return '![new items](https://img.shields.io/badge/%E2%9C%94%20metrics-new%20items-green)';
   }
-  return '![success](https://img.shields.io/badge/%E2%9C%94%20reg-passed-green)';
+  return '![success](https://img.shields.io/badge/%E2%9C%94%20metrics-passed-green)';
 };
