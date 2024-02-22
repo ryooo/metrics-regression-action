@@ -10,7 +10,9 @@ export const copyFiles = async (from: string, to: string): Promise<void> => {
   const fromPaths = globSync(from);
   for (const fromPath of fromPaths) {
     const fileName = basename(fromPath);
-    await capture('cp', [fromPath, join(to, fileName)]);
+    const toPath = join(to, fileName);
+    log.info(`Start copy file, ${fromPath} to ${toPath}`);
+    await capture('cp', [fromPath, toPath]);
   }
 };
 
