@@ -5,7 +5,7 @@ import Zip, { IZipEntry } from 'adm-zip';
 import { sync as globSync } from 'glob';
 import makeDir from 'make-dir';
 
-import { DownloadClient, UploadClient, Client } from './client';
+import { DownloadClient, UploadClient, Client, createOrUpdateComment } from './client';
 import { createCommentWithRun, createCommentWithoutRun } from './comment';
 import { compare, CompareOutput } from './compare';
 import { Config } from './config';
@@ -15,7 +15,7 @@ import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
 import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
-import { copyFiles } from './helper';
+import { capture, copyFiles } from './helper';
 
 /**
  * Compare and post report on comment.
@@ -52,6 +52,7 @@ export const run = async ({
 }): Promise<void> => {
   log.info(`start initialization.`);
   // Create workspace
+  await capture('rm', ['-rf', workspace()]);
   await makeDir(workspace());
   await copyActualJsons(config);
 
@@ -85,8 +86,8 @@ export const run = async ({
         artifactName: config.artifactName,
         result,
       });
-      log.info(comment);
-      await client.postComment(event.number, comment);
+      log.info('Start createOrUpdateComment', event.number, config.artifactName, comment);
+      await createOrUpdateComment(client, event.number, config.artifactName, comment);
     }
     return;
   }
@@ -113,9 +114,10 @@ export const run = async ({
     regBranch: config.branch,
   });
 
-  log.info(comment);
-  await client.postComment(event.number, comment);
+  log.info('Start createOrUpdateComment', event.number, config.artifactName, comment);
+  await createOrUpdateComment(client, event.number, config.artifactName, comment);
 
+  log.info('Start pushWorkspaceToBranch.', runId, date);
   await pushWorkspaceToBranch(result, runId, date, config);
 
   log.info('post summary comment');

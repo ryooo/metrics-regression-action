@@ -52,7 +52,7 @@ export const isSameMetric = (a: Metric, b: Metric): boolean => {
 
 export const compareMetrics = (expected: Metric, actual: Metric): ComparedMetric => {
   const diff = actual.value - expected.value;
-  const diffStr = numberToStr(diff, 1);
+  const diffStr = numberToStr(diff, 2);
   const threshold = 1; // TODO use config.
   return {
     type: 'compared-metric',
@@ -60,7 +60,7 @@ export const compareMetrics = (expected: Metric, actual: Metric): ComparedMetric
     metricName: actual.metricName,
     actualStr: numberToStr(actual.value, 2), // TODO get digit by config.
     expectedStr: numberToStr(expected.value, 2), // TODO get digit by config.
-    diffStr: diff > 0 ? `+${diffStr}` : `-${diffStr}`,
+    diffStr: diffStr === '0' ? '±0' : diff > 0 ? `+${diffStr}` : `-${diffStr}`,
     within: Math.abs(diff) <= threshold,
 
     actual,
@@ -70,8 +70,8 @@ export const compareMetrics = (expected: Metric, actual: Metric): ComparedMetric
 
 const numberToStr = (value: number, digit: number): string => {
   if (digit > 0) {
-    const str = Math.floor(value * 10 * digit).toString();
-    return `${str.slice(0, str.length - digit)}.${str.slice(-1 * digit)}`;
+    const base = Math.pow(10, digit);
+    return (Math.floor(value * base) / base).toString();
   }
   return Math.floor(value).toString();
 };

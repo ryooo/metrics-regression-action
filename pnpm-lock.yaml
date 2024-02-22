@@ -26,6 +26,12 @@ dependencies:
   '@octokit/openapi-types':
     specifier: ^19.1.0
     version: 19.1.0
+  '@octokit/rest':
+    specifier: ^20.0.2
+    version: 20.0.2
+  '@octokit/types':
+    specifier: ^12.5.0
+    version: 12.5.0
   adm-zip:
     specifier: ^0.5.10
     version: 0.5.10
@@ -1031,6 +1037,15 @@ packages:
       '@octokit/core': 3.6.0
     dev: false
 
+  /@octokit/plugin-request-log@4.0.0(@octokit/core@5.1.0):
+    resolution: {integrity: sha512-2uJI1COtYCq8Z4yNSnM231TgH50bRkheQ9+aH8TnZanB6QilOnx8RMD2qsnamSOXtDj0ilxvevf5fGsBhBBzKA==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=5'
+    dependencies:
+      '@octokit/core': 5.1.0
+    dev: false
+
   /@octokit/plugin-rest-endpoint-methods@10.3.0(@octokit/core@5.1.0):
     resolution: {integrity: sha512-c/fjpoHispRvBZuRoTVt/uALg7pXa9RQbXWJiDMk6NDkGNomuAZG7YuYYpZoxeoXv+kVRjIDTsO0e1z0pei+PQ==}
     engines: {node: '>= 18'}
@@ -1096,6 +1111,16 @@ packages:
       '@octokit/request-error': 5.0.1
       '@octokit/types': 12.5.0
       universal-user-agent: 6.0.1
+    dev: false
+
+  /@octokit/rest@20.0.2:
+    resolution: {integrity: sha512-Ux8NDgEraQ/DMAU1PlAohyfBBXDwhnX2j33Z1nJNziqAfHi70PuxkFYIcIt8aIAxtRE7KVuKp8lSR8pA0J5iOQ==}
+    engines: {node: '>= 18'}
+    dependencies:
+      '@octokit/core': 5.1.0
+      '@octokit/plugin-paginate-rest': 9.1.5(@octokit/core@5.1.0)
+      '@octokit/plugin-request-log': 4.0.0(@octokit/core@5.1.0)
+      '@octokit/plugin-rest-endpoint-methods': 10.3.0(@octokit/core@5.1.0)
     dev: false
 
   /@octokit/types@12.5.0:
