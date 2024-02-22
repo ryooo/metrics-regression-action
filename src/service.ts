@@ -14,6 +14,7 @@ import { Event } from './event';
 import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
+import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
 
 const { cpy } = require('cpy');
 
@@ -26,6 +27,7 @@ const { cpy } = require('cpy');
  * 5. compare actual <=> expected files.
  * 6. upload files exist on the workspace as GitHub Actions run's artifact.
  * 7. post report comment.
+ * 8. push workspace files to GitHub repository.
  *
  * @param event
  * @param runId
@@ -109,6 +111,8 @@ export const run = async ({
 
   await client.postComment(event.number, comment);
 
+  await pushWorkspaceToBranch(result, runId, date, config);
+
   log.info('post summary comment');
 
   await client.summary(comment);
@@ -184,5 +188,30 @@ const downloadExpectedJsons = async (client: DownloadClient, latestArtifactId: n
       return;
     }
     log.error(`Failed to download artifact ${e}`);
+  }
+};
+
+const pushWorkspaceToBranch = async (
+  result: CompareOutput,
+  runId: number,
+  date: string,
+  config: Config,
+): Promise<void> => {
+  if (
+    result.newMetrics.length !== 0 ||
+    result.deletedMetrics.length !== 0 ||
+    result.withinThresholdMetrics.length !== 0 ||
+    result.overThresholdMetrics.length !== 0
+  ) {
+    await pushFilesToBranch({
+      githubToken: config.githubToken,
+      runId,
+      result,
+      branch: config.branch,
+      targetDir: createPushDirName({ runId, artifactName: config.artifactName, date }),
+      env: process.env as EnvironmentVariables,
+      // commitName: undefined,
+      // commitEmail: undefined,
+    });
   }
 };
