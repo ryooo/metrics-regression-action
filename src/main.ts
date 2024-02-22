@@ -1,26 +1,28 @@
-import * as core from '@actions/core'
-import { wait } from './wait'
+import { setOutput } from '@actions/core';
+import { context, getOctokit } from '@actions/github';
 
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
-export async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
+import { createClient } from './client';
+import { getConfig } from './config';
+import { getEvent } from './event';
+import { log } from './logger';
+import { run as serviceRun } from './service';
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+export const run = async (): Promise<void> => {
+  const config = getConfig();
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  const { repo, runId } = context;
+  log.info(`runid = ${runId}`);
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
-  }
-}
+  const date = new Date().toISOString().split('T')[0];
+  const event = getEvent();
+  log.info(`succeeded to get event, number = ${event.number}, before = ${event.before}, after = ${event.after}`);
+  log.info(`pull_request.head.sha = ${event.pull_request?.head?.sha}`);
+  const sha = event.after || context.sha;
+
+  const octokit = getOctokit(config.githubToken);
+  const client = createClient(repo, octokit);
+
+  log.info(`start`);
+  await serviceRun({ event, runId, sha, client, date, config });
+  setOutput('result', 'ok');
+};
