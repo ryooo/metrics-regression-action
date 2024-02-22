@@ -72,6 +72,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           json-directory-path: "__sample__"
           target-hash: '7ab49d64ceaa37d19e38a105630ceb883f36982c'
+          artifact-name: 'metrics-with-target-hash'
 
       - name: Print Output(with target hash)
         id: output-with-target-hash
