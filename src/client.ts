@@ -131,7 +131,7 @@ export const createOrUpdateComment = async (
   for (const comment of comments.data) {
     if (comment.body?.includes(commentKey)) {
       log.info(`Start updateComment. ${issueNumber}, ${comment.id}`);
-      await client.updateComment(issueNumber, comment.id, body);
+      await client.updateComment(issueNumber, comment.id, `${commentKey}${body}`);
       return;
     }
   }
