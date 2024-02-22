@@ -19,6 +19,7 @@ const run = async () => {
     const client = (0, client_1.createClient)(repo, octokit);
     logger_1.log.info(`start`);
     await (0, service_1.run)({ event, runId, sha, client, date, config });
+    (0, core_1.setOutput)('result', 'ok');
 };
 exports.run = run;
 (0, exports.run)().catch(e => (0, core_1.setFailed)(e.message));
