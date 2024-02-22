@@ -15,7 +15,7 @@ import { log } from './logger';
 import { workspace } from './path';
 import { findRunAndArtifact } from './run';
 import { createPushDirName, EnvironmentVariables, pushFilesToBranch } from './push';
-import { capture, copyFiles } from './helper';
+import { copyFiles } from './helper';
 
 /**
  * Compare and post report on comment.
@@ -85,6 +85,7 @@ export const run = async ({
         artifactName: config.artifactName,
         result,
       });
+      log.info(comment);
       await client.postComment(event.number, comment);
     }
     return;
@@ -108,6 +109,7 @@ export const run = async ({
     regBranch: config.branch,
   });
 
+  log.info(comment);
   await client.postComment(event.number, comment);
 
   await pushWorkspaceToBranch(result, runId, date, config);
@@ -144,14 +146,8 @@ const compareAndUploadArtifact = async (client: UploadClient, config: Config): P
   const result = await compare(config);
   log.debug('compare result', result);
 
-  log.info(workspace());
-  log.info(join(workspace(), '**/*'));
   const files = globSync(join(workspace(), '**/*'));
-  log.info('Start upload artifact', files.join('\n'));
-  log.info((await capture('pwd', [])).stdout);
-  log.info((await capture('ls', ['-la', '/'])).stdout);
-  log.info((await capture('ls', ['-la'])).stdout);
-  log.info((await capture('ls ', ['-la', workspace()])).stdout);
+  log.info('Start upload artifact', config.artifactName, files.join('\n'));
 
   try {
     await client.uploadArtifact(files, config.artifactName);

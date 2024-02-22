@@ -3,6 +3,7 @@ import { statSync } from 'fs';
 import { getInput } from '@actions/core';
 
 import { ARTIFACT_NAME } from './constants';
+import { log } from './logger';
 
 export interface Config {
   jsonDirectoryPath: string;
@@ -70,6 +71,16 @@ export const getConfig = (): Config => {
 
   const artifactName = getInput('artifact-name') || ARTIFACT_NAME;
   const branch = getInput('branch') || 'metrics-regression-action';
+
+  log.info(
+    `config is ${{
+      githubToken,
+      jsonDirectoryPath,
+      targetHash,
+      artifactName,
+      branch,
+    }}`,
+  );
 
   return {
     githubToken,
