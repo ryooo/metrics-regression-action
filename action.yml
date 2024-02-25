@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'metrics-regression-action'
+description: 'Measure the difference between PR base<=>head of metrics listed in the json file and comment the result to PR.'
+author: 'ryooo'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -22,10 +22,10 @@ inputs:
     description: "The commit hash to be compared."
     required: false
   artifact-name:
-    description: 'Workflow artifact name. `reg` by default.'
+    description: 'Workflow artifact name. `metrics` by default.'
     required: false
   branch:
-    description: 'A branch name which manages images. `reg_actions` by default.'
+    description: 'A branch name which manages images. `metrics-regression-action` by default.'
     required: false
 
 # Define your outputs here.

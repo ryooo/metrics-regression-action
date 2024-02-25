@@ -1,8 +1,6 @@
 import { statSync } from 'fs';
 
 import { getInput } from '@actions/core';
-
-import { ARTIFACT_NAME } from './constants';
 import { log } from './logger';
 
 export interface Config {
@@ -85,7 +83,7 @@ export const getConfig = (): Config => {
   const targetHash = getInput('target-hash') || null;
   validateTargetHash(targetHash);
 
-  const artifactName = getInput('artifact-name') || ARTIFACT_NAME;
+  const artifactName = getInput('artifact-name') || 'metrics';
   const branch = getInput('branch') || 'metrics-regression-action';
 
   log.info(`--------config--------`);

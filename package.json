@@ -1,16 +1,16 @@
 {
-  "name": "value-regression-action",
+  "name": "metrics-regression-action",
   "description": "Regression test using pull-request comment for any string or numeric values.",
   "version": "0.0.1",
   "author": "ryooo",
   "private": true,
-  "homepage": "https://github.com/ryooo/value-regression-action",
+  "homepage": "https://github.com/ryooo/metrics-regression-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryooo/value-regression-action.git"
+    "url": "git+https://github.com/ryooo/metrics-regression-action.git"
   },
   "bugs": {
-    "url": "https://github.com/ryooo/value-regression-action/issues"
+    "url": "https://github.com/ryooo/metrics-regression-action/issues"
   },
   "keywords": [
     "actions",
