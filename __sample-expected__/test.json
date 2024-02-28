@@ -1,4 +1,12 @@
 {
-  "TaskDuration": 15,
-  "LayoutDuration": 10.123
+  "TaskDuration": {
+    "name": "TaskDuration",
+    "threshold": 1,
+    "unit": "ms",
+    "value": 15.123
+  },
+  "LayoutDuration": {
+    "name": "LayoutDuration",
+    "value": 10.123
+  }
 }
