@@ -40,15 +40,17 @@ export const parseMetricsFile = (path: string): Metric[] => {
   const metrics: Metric[] = [];
   for (const metricName in fileContents) {
     const h = fileContents[metricName];
-    metrics.push({
-      type: 'metric',
-      fileName: basename(path),
-      metricName,
-      value: h.value,
-      threshold: h.threshold || 1,
-      unit: h.unit || '',
-      decimalDigits: h.decimalDigits || 2,
-    });
+    if (h.value !== undefined) {
+      metrics.push({
+        type: 'metric',
+        fileName: basename(path),
+        metricName,
+        value: h.value,
+        threshold: h.threshold || 1,
+        unit: h.unit || '',
+        decimalDigits: h.decimalDigits || 2,
+      });
+    }
   }
   return metrics;
 };
@@ -73,7 +75,7 @@ export const compareMetrics = (expected: Metric, actual: Metric): ComparedMetric
     metricName: actual.metricName,
     actualStr: numberToStr(actual.value, actual.decimalDigits, actual.unit),
     expectedStr: numberToStr(expected.value, actual.decimalDigits, actual.unit),
-    diffStr: diffStr === '0' ? `±0${actual.unit}` : diff > 0 ? `+${diffStr}` : `-${diffStr}`,
+    diffStr: diffStr === '0' ? `±0${actual.unit}` : diff > 0 ? `+${diffStr}` : `${diffStr}`,
     within: Math.abs(diff) <= actual.threshold,
 
     actual,
