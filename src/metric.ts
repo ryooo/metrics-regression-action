@@ -93,7 +93,8 @@ const numberToStr = (value: number, digit: number, unit: string): string => {
 
 export const metricToTd = (m: Metric | ComparedMetric): string => {
   const fileName = m.fileName.replace('.json', '');
-  return `| ${fileName} | ${m.metricName} | ${isComparedMetric(m) ? `${m.actualStr}(${m.diffStr})` : numberToStr(m.value, m.decimalDigits, m.unit)} |${debugPrint(m)}`;
+  const val = isComparedMetric(m) ? `${m.actualStr}(${m.diffStr})` : numberToStr(m.value, m.decimalDigits, m.unit);
+  return `| ${fileName} | ${m.metricName} | ${val} |${debugPrint(m)}`;
 };
 
 const debugPrint = (m: Metric | ComparedMetric): string => {
