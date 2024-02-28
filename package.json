@@ -1,7 +1,7 @@
 {
   "name": "metrics-regression-action",
   "description": "Regression test using pull-request comment for any string or numeric values.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "ryooo",
   "private": true,
   "homepage": "https://github.com/ryooo/metrics-regression-action",
