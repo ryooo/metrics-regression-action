@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@actions/artifact':
-    specifier: ^2.1.1
-    version: 2.1.1
+    specifier: ^2.1.4
+    version: 2.1.4
   '@actions/core':
     specifier: ^1.10.1
     version: 1.10.1
@@ -114,12 +114,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /@actions/artifact@2.1.1:
-    resolution: {integrity: sha512-xVVwWhrRb4YLiTeYkNxctv9IhwIKUsLwIhqD9CKknXtQaqIksq5HttFN8wXQvMrpjQO4zGJf5xLUs6mKyfN4yQ==}
+  /@actions/artifact@2.1.4:
+    resolution: {integrity: sha512-nKgNduFA02drKt4rFqXsF6PjWmfKdxZDuWWdenoI1bBzgys3y8O7kw4gAS+gvLOT3EfsyV+mwTIisuXBjwQ3RA==}
     dependencies:
       '@actions/core': 1.10.1
       '@actions/github': 5.1.1
-      '@actions/http-client': 2.2.0
+      '@actions/http-client': 2.2.1
       '@azure/storage-blob': 12.17.0
       '@octokit/core': 3.6.0
       '@octokit/plugin-request-log': 1.0.4(@octokit/core@3.6.0)
@@ -152,7 +152,7 @@ packages:
   /@actions/github@5.1.1:
     resolution: {integrity: sha512-Nk59rMDoJaV+mHCOJPXuvB1zIbomlKS0dmSIqPGxd0enAXBnOfn4VWF+CGtRCwXZG9Epa54tZA7VIRlJDS8A6g==}
     dependencies:
-      '@actions/http-client': 2.2.0
+      '@actions/http-client': 2.2.1
       '@octokit/core': 3.6.0
       '@octokit/plugin-paginate-rest': 2.21.3(@octokit/core@3.6.0)
       '@octokit/plugin-rest-endpoint-methods': 5.16.2(@octokit/core@3.6.0)
@@ -171,6 +171,13 @@ packages:
 
   /@actions/http-client@2.2.0:
     resolution: {integrity: sha512-q+epW0trjVUUHboliPb4UF9g2msf+w61b32tAkFEwL/IwP0DQWgbCMM0Hbe3e3WXSKz5VcUXbzJQgy8Hkra/Lg==}
+    dependencies:
+      tunnel: 0.0.6
+      undici: 5.28.3
+    dev: false
+
+  /@actions/http-client@2.2.1:
+    resolution: {integrity: sha512-KhC/cZsq7f8I4LfZSJKgCvEwfkE8o1538VoBeoGzokVLLnbFDEAdFD3UhoMklxo2un9NJVBdANOresx7vTHlHw==}
     dependencies:
       tunnel: 0.0.6
       undici: 5.28.3
@@ -253,7 +260,7 @@ packages:
     resolution: {integrity: sha512-KxDlhXyMlh2Jhj2ykX6vNEU0Vou4nHr025KoSEiz7cS3BNiHNaZcdECk/DmLkEB0as5T7b/TpRcehJ5yV6NeXQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@opentelemetry/api': 1.7.0
+      '@opentelemetry/api': 1.8.0
       tslib: 2.6.2
     dev: false
 
@@ -1135,8 +1142,8 @@ packages:
       '@octokit/openapi-types': 12.11.0
     dev: false
 
-  /@opentelemetry/api@1.7.0:
-    resolution: {integrity: sha512-AdY5wvN0P2vXBi3b29hxZgSFvdhdxPB9+f0B6s//P9Q8nibRWeA3cHm8UmLpio9ABigkVHJ5NMPk+Mz8VCCyrw==}
+  /@opentelemetry/api@1.8.0:
+    resolution: {integrity: sha512-I/s6F7yKUDdtMsoBWXJe8Qz40Tui5vsuKCWJEWVL+5q9sSWRzzx6v2KeNsOBEwd94j0eWkpWCH4yB6rZg9Mf0w==}
     engines: {node: '>=8.0.0'}
     dev: false
 
